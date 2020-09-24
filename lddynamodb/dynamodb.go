@@ -460,6 +460,8 @@ func (store *dynamoDBFeatureStore) UpsertInternal(kind ld.VersionedDataKind, ite
 		store.testUpdateHook()
 	}
 
+	store.loggers.Debugf("UpsertInternal with: (namespace=%s key=%s version=%d)", kind.GetNamespace(), item.GetKey(), item.GetVersion())
+
 	_, err = store.client.PutItem(&dynamodb.PutItemInput{
 		TableName: aws.String(store.options.table),
 		Item:      av,

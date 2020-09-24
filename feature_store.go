@@ -160,14 +160,18 @@ func (store *InMemoryFeatureStore) Init(allData map[VersionedDataKind]map[string
 
 // Upsert inserts or replaces an item in the store unless there it already contains an item with an equal or larger version
 func (store *InMemoryFeatureStore) Upsert(kind VersionedDataKind, item VersionedData) error {
+	store.loggers.Debugf("upsert InMemoryFeatureStor")
 	store.Lock()
 	defer store.Unlock()
 	if store.allData[kind] == nil {
+		store.loggers.Debugf("upsert InMemoryFeatureStor from nil")
 		store.allData[kind] = make(map[string]VersionedData)
 	}
 	items := store.allData[kind]
 	old := items[item.GetKey()]
 
+	store.loggers.Debugf("upsert old version: %d", old.GetVersion())
+	store.loggers.Debugf("upsert new version: %d", item.GetVersion())
 	if old == nil || old.GetVersion() < item.GetVersion() {
 		items[item.GetKey()] = item
 	}
